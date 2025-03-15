@@ -1,0 +1,152 @@
+body{
+  background-color: white;
+  margin: 0;
+}
+.dashboard {
+  display: flex;
+  background-color: white;
+  margin-top: 20px;
+  height: 100vh;
+}
+.sidebar {
+  width: 20%;
+  background-color: white;
+  height: 100vh;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+.account-main {
+  flex: 1; /* Chiếm toàn bộ không gian còn lại */
+  padding: 20px; /* Padding cho phần tổng quan */
+  overflow-y: auto; /* Cuộn dọc nếu nội dung vượt quá chiều cao */
+}
+.logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.hello-user span {
+  color: black;
+  font-weight: bold;
+}
+.sidebar nav a {
+  display: block;
+  padding: 10px;
+  color: black;
+  text-decoration: none;
+  border-radius: 10px; /* Bo góc */
+  transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển đổi */
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+  background-color: #F4983D; /* Màu nền khi hover hoặc đang hoạt động */
+  color: white; /* Màu chữ khi hover hoặc đang hoạt động */
+}
+
+.main-content {
+  flex-grow: 1;
+  margin: 20px;
+  padding: 20px;
+  width: 100%;
+  background-color: #FFCC99;
+}
+.main-content h2 {
+  font-size: 28px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  position: relative; /* Đặt vị trí tương đối cho header */
+}
+.hello-user {
+  position: absolute;
+  right: 20px; /* Khoảng cách từ bên phải */
+  top: 50%;
+  transform: translateY(-50%); /* Căn giữa theo chiều dọc */
+}
+.main-content h1 {
+  color: black;
+}
+
+.logout {
+  background-color: #F4983D;
+  border-radius: 5px;
+}
+
+.grid {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.top-user, .top-doctors {
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+  width: 48%;
+}
+
+.schedule {
+  margin-top: 20px;
+  background-color: white;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+button {
+  background-color: white;
+  border: none;
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.spa-schedule {
+  background-color: white;
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 8px;
+}
+.main-content img {
+  width: 20px;
+  height: auto;
+}
+
+.view-schedule {
+  background-color: transparent; /* Nền trong suốt */
+  border: 1px solid #007bff; /* Đường viền màu xanh */
+  color: #007bff; /* Màu chữ */
+  border-radius: 50px; /* Bo góc */
+  margin: 0;
+  padding: 5px 5px; /* Khoảng cách bên trong */
+  cursor: pointer; /* Con trỏ tay khi hover */
+  text-decoration: none; /* Xóa gạch chân */
+}
+
+.view-schedule:hover {
+  background-color: #007bff; /* Nền xanh khi hover */
+  color: white; /* Màu chữ trắng khi hover */
+}
+.icon-user{
+  margin-right: 5px;
+  font-size: 20px;
+}

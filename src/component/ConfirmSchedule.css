@@ -1,0 +1,92 @@
+.confirm-booking-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Đảm bảo modal hiển thị trên cùng */
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 1100px; /* Chiều rộng của modal thông tin */
+  max-width: 90%;
+  text-align: left; /* Căn trái cho nội dung */
+  display: flex;
+  flex-direction: column; /* Để căn giữa nội dung theo chiều dọc */
+  align-items: center; /* Căn giữa nội dung bên trong modal */
+}
+.button-group {
+  display: flex;
+  justify-content: flex-end; /* Căn lề phải */
+  margin-top: 20px; /* Khoảng cách trên nút */
+}
+
+button {
+  margin-left: 10px; /* Khoảng cách giữa các nút */
+}
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0; /* Khoảng cách phía trên và dưới */
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+
+.circle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #f0f0f0; /* Màu nền cho các bước */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: black;
+}
+
+.completed .circle {
+  background-color: #7CB9FA; /* Màu xanh cho bước đã hoàn thành */
+  color: white;
+}
+
+.current .circle {
+  background-color: #1EFF0E; /* Màu cam cho bước hiện tại */
+  color: white;
+}
+
+.line {
+  height: 2px;
+  width: 50px; /* Chiều dài đường kẻ nối */
+  background-color: #ccc;
+}
+
+/* Định dạng các label cho bước */
+.nav-item span {
+  margin-top: 5px; /* Khoảng cách giữa số và tên bước */
+  text-align: center; /* Căn giữa nội dung */
+}
+.form-confirm {
+  width: 100%; /* Để form chiếm toàn bộ chiều rộng của modal */
+  max-width: 600px; /* Chiều rộng tối đa của form */
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Hiệu ứng đổ bóng */
+  transition: all 0.3s ease; /* Hiệu ứng chuyển đổi mượt mà */
+  display: flex; /* Sử dụng flexbox */
+  flex-direction: column; /* Hướng cột cho các thành phần bên trong */
+  align-items: stretch; /* Căn giữa chiều rộng các thành phần con */
+  margin-top: 10px;
+}

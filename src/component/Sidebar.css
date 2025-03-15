@@ -1,0 +1,71 @@
+.sidebar {
+  width: 250px;
+  background-color: white;
+  padding: 20px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar .logo {
+  margin-bottom: 20px;
+}
+
+.sidebar .logo img {
+  width: 100px;
+}
+
+.sidebar nav {
+  flex-grow: 1;
+}
+
+.sidebar .menu-item {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sidebar .menu-item.active {
+  background-color: #F4983D; /* Màu sắc cho menu lớn khi active */
+  color: white; 
+}
+.sidebar .menu-item:hover {
+  background-color: #F4983D;
+  color: white; /* Màu sắc khi hover */
+}
+
+.sidebar .menu-item .menu-icon {
+  margin-right: 10px;
+}
+
+.sidebar .sub-menu {
+  margin-left: 20px;
+  background-color: #E6E9EE;
+}
+
+.sidebar .sub-menu-item {
+  display: block;
+  padding: 10px;
+  text-decoration: none;
+  color: #555;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.sidebar .sub-menu-item.active{
+  background-color: black;
+  color: white; /* Màu sắc khi active hoặc hover */
+}
+.sidebar .sub-menu-item:hover {
+  background-color: #6C757D; /* Màu sắc khi hover cho sub-menu */
+  color: white; /* Màu chữ khi hover cho sub-menu */
+}
+
+.menu-icon {
+  width: 20px; /* Chiều rộng biểu tượng */
+  height: 20px; /* Chiều cao biểu tượng */
+  margin-right: 10px; /* Khoảng cách giữa biểu tượng và văn bản */
+  vertical-align: middle; /* Căn chỉnh biểu tượng với văn bản */
+}

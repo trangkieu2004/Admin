@@ -1,0 +1,81 @@
+.login-container {
+  width: 350px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #FFCC99;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h2 {
+  text-align: center;
+  color: black;
+  font-weight: bold;
+  font-size: 24px; /* Kích thước chữ tiêu đề */
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 10px; /* Khoảng cách giữa các trường */
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px; /* Kích thước chữ cho input */
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #F4983D; /* Màu cam đậm */
+  border: none;
+  border-radius: 5px;
+  color: white; /* Màu chữ */
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  background-color: #e68a00; /* Màu cam tối hơn khi hover */
+}
+
+.footer-links {
+  display: flex;
+  justify-content: space-between; 
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.sizechu{
+  color: black;
+  text-align: center;
+  margin-right: 5px;
+}
+.kieuchu {
+  color: black;
+  text-align: center;
+  margin-right: 5px;
+}
+.register-link {
+  display: block; /* Để "Đăng ký" nằm dưới "Bạn đã có tài khoản chưa?" */
+  margin-top: 5px;
+  text-align: center; /* Thêm khoảng cách giữa hai dòng */
+}
+
+a {
+  color: black;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+.kieuchu a{
+  color: black;
+  text-decoration: none;
+}

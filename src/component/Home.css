@@ -1,0 +1,138 @@
+.text{
+  color: #D29150;
+  font-size: 64px;
+  padding-left: 20px;
+
+}
+.title-p{
+  font-size: 32px;
+  color: #999599;
+  padding-left: 20px;
+  padding-right: 20px;
+  font-family: "Inter", sans-serif;
+}
+.open{
+  background-color: #ECBE90;
+  border-radius: 50px;
+  width: auto;
+  
+}
+h3{
+  font-size: 48px;
+  color: black;
+}
+.danhgia{
+  font-size: 20px;
+  color: black;
+}
+.center{
+  text-align: center;
+}
+.container-fluid-body{
+  background-color: #FFF8F2;
+  margin-top: 70px;
+  min-height: 100vh;
+  overflow: visible;
+  padding-bottom: 50px;
+}
+h1{
+  padding-top: 30px;
+  color: black;
+  font-weight: bold;
+  font-size: 48px;
+  text-align: center;
+}
+.divider-container {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Căn giữa các phần tử */
+  margin: 20px 0; /* Khoảng cách giữa tiêu đề và các phần khác */
+}
+.line {
+  flex: 0 0 15%; /* Đường kẻ sẽ chiếm không gian còn lại */
+  height: 3px; /* Chiều cao đường kẻ */
+  background-color: #F4983D; /* Màu sắc đường kẻ */
+  margin: 0 10px; /* Khoảng cách giữa đường kẻ và chân mèo */
+}
+.paw-icon {
+  width: 90px; /* Kích thước biểu tượng */
+  height: auto; /* Để giữ tỷ lệ */
+}
+h5{
+  color: #F4983D;
+  font-size: 24px;
+}
+.textsize{
+  font-size: 20px;
+  color: black;
+  text-align: center;
+}
+.anh{
+  width: 55px;
+  height: 60px;
+  object-fit: cover; /* Giữ tỷ lệ ảnh */
+  display: block;
+  margin: 20px auto;
+}
+.card-title{
+  color: #D38E48;
+  font-size: 25px;
+  text-align: center;
+}
+.card-text{
+  color: black;
+  text-align: left;
+  font-weight: bold;
+
+}
+.text-p {
+  color: black;
+  font-size: 20px;
+  text-align: left;
+  margin-top: 5px;
+}
+.tieude{
+  text-align: left;
+  margin: 10px;
+  padding-top: 10px;
+}
+.linemax{
+  width: 380px; /* Đặt độ dài của line */
+  height: 5px; /* Đặt độ rộng của line */
+  background-color: #F4983D; /* Màu của line */
+  margin-bottom: 20px; /* Khoảng cách dưới line */
+  margin-left: 0;
+}
+.nut{
+  background-color: #F4983D;
+  color: black;
+  font-size: 18px;
+  width: auto;
+}
+.feedback{
+  background-color: #FFF7EF;
+  height: 844px;
+}
+.card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 -15px;
+}
+.card:hover {
+  transform: scale(1.05);
+}
+.offset-card {
+  margin-top: 40px; /* Tạo khoảng cách cho thẻ thứ hai */
+  transform: translateY(100px); /* Đẩy thẻ thứ hai xuống thêm 20px */
+}
+.text-start {
+  margin: 20px;
+}
