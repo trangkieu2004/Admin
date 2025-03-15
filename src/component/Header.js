@@ -1,8 +1,8 @@
 import React from "react";
 import "./Header.css";
-import logo from "../img/anhnen.png";
-import anhnen from "../img/image 1.png";
-import search from "../img/Search.png";
+import logo from "../picture/anhnen.png"
+import anhnen from "../picture/image 1.png";
+import search from "../picture/Search.png";
 import { Link, useNavigate } from "react-router-dom";
 const FComment = ({ username, onLogout }) => {
   const navigate = useNavigate();

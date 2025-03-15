@@ -1,11 +1,11 @@
 import React from "react";
 import "./Footer.css";
-import location from "../img/Home/icon.png";
-import phone from "../img/Home/Phone.png";
-import mail from "../img/Home/Mail.png";
-import call from "../img/Home/call.png";
-import facebook from "../img/Home/facebook.png";
-import tiktok from "../img/Home/tiktok.png";
+import location from "../picture/AdminHome/icon.png";
+import phone from "../picture/AdminHome/Phone.png";
+import mail from "../picture/AdminHome/Mail.png";
+import call from "../picture/AdminHome/call.png";
+import facebook from "../picture/AdminHome/facebook.png";
+import tiktok from "../picture/AdminHome/tiktok.png";
 const Footer = () => {
   return (
     <div className="footer">

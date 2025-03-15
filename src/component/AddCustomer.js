@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./AddSchedule.css"; // Tạo file CSS cho phong cách
+import "./AddCustomer.css"; // Tạo file CSS cho phong cách
 
 const AddCustomer = ({ onClose, onAddCustomer }) => {
   const [formData, setFormData] = useState({

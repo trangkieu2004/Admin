@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import {useNavigate } from "react-router-dom"; // Nhập Link từ react-router-dom
 import "./Schedule.css";
-import editIcon from "../img/Edit.png"; // Thay đổi đường dẫn nếu cần
-import deleteIcon from "../img/Delete.png"; // Thay đổi đường dẫn nếu cần
+import editIcon from "../picture/Edit.png";
+import deleteIcon from "../picture/Delete.png";
 import Sidebar from "./Sidebar";
 import AddSchedule from "./AddSchedule";
 

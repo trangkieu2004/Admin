@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Sidebar.css';
 import { Link, useLocation } from "react-router-dom";
-import logo from "../img/anhnen.png";
+import logo from "../picture/anhnen.png";
 
 const Sidebar = () => {
   const location = useLocation();

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; // Nhập Link từ react-router-dom
 import "./Account.css";
-import editIcon from "../img/Edit.png"; // Thay đổi đường dẫn nếu cần
-import deleteIcon from "../img/Delete.png"; // Thay đổi đường dẫn nếu cần
+import editIcon from "../image/Edit.png"; // Thay đổi đường dẫn nếu cần
+import deleteIcon from "../image/Delete.png"; // Thay đổi đường dẫn nếu cần
 import Sidebar from "./Sidebar";
 
 const Account = ({ username, onLogout }) => {

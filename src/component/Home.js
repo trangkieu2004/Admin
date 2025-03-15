@@ -1,18 +1,18 @@
 import React from "react";
 import "./Home.css";
-import like from "../img/Home/Facebook Like.png";
-import star from "../img/Home/5 Star Hotel.png";
-import pet1 from "../img/Home/pet1.png";
-import pet2 from "../img/Home/pet2.png";
-import pet3 from "../img/Home/pet3.png";
-import pet4 from "../img/Home/pet4.png";
-import chanmeo from "../img/Home/chan_meo.png";
-import kham_meo from "../img/Home/kham_meo.png";
-import doctor1 from "../img/Home/dortor1.png";
-import doctor2 from "../img/Home/dortor2.png";
-import cat1 from "../img/Home/Cat1.png";
-import cat2 from "../img/Home/Cat2.png";
-import cat3 from "../img/Home/Cat3.png";
+import like from "../picture/AdminHome/Facebook Like.png";
+import star from "../picture/AdminHome/5 Star Hotel.png";
+import pet1 from "../picture/AdminHome/pet1.png";
+import pet2 from "../picture/AdminHome/pet2.png";
+import pet3 from "../picture/AdminHome/pet3.png";
+import pet4 from "../picture/AdminHome/pet4.png";
+import chanmeo from "../picture/AdminHome/chan_meo.png";
+import kham_meo from "../picture/AdminHome/kham_meo.png";
+import doctor1 from "../picture/AdminHome/dortor1.png";
+import doctor2 from "../picture/AdminHome/dortor2.png";
+import cat1 from "../picture/AdminHome/Cat1.png";
+import cat2 from "../picture/AdminHome/Cat2.png";
+import cat3 from "../picture/AdminHome/Cat3.png";
 
 const CommentDetail = () => {
   const feedbacks = [
