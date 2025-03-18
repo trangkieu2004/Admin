@@ -1,37 +1,52 @@
 import React, { useState } from "react";
-import "./AddCustomer.css"; // Tạo file CSS cho phong cách
+import "./AddCustomer.css";
 
 const AddCustomer = ({ onClose, onAddCustomer }) => {
   const [formData, setFormData] = useState({
-    account: "",
+    username: "",
     password: "",
     phone: "",
     email: "",
     address: "",
-    gender: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Gọi hàm onAddAccount để thêm tài khoản
-    onAddCustomer(formData);
-    // Reset formData về giá trị ban đầu
+  const resetForm = () => {
     setFormData({
-      account: "",
+      username: "",
       password: "",
       phone: "",
       email: "",
       address: "",
-      gender: "",
     });
+  };
 
-    // Đóng modal
-    onClose();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("https://pet-booking-eta.vercel.app/user/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, role: "USER" }),
+      });
+
+      if (response.ok) {
+        const newCustomer = await response.json();
+        onAddCustomer(newCustomer);
+        alert("Tạo khách hàng thành công!");
+        resetForm();
+        onClose();
+      } else {
+        alert("Tạo tài khoản thất bại. Vui lòng kiểm tra lại.");
+      }
+    } catch (error) {
+      console.error("Lỗi khi tạo khách hàng:", error);
+      alert("Có lỗi xảy ra. Vui lòng thử lại.");
+    }
   };
 
   return (
@@ -40,33 +55,18 @@ const AddCustomer = ({ onClose, onAddCustomer }) => {
         <span className="close" onClick={onClose}>&times;</span>
         <h2>TẠO TÀI KHOẢN</h2>
         <form onSubmit={handleSubmit}>
-          {/* Các trường nhập liệu */}
-          <div>
-            <label>Tài khoản</label>
-            <input type="text" name="account" value={formData.account} onChange={handleChange} required />
-          </div>
-          <div>
-            <label>Mật khẩu</label>
-            <input type="password" name="password" value={formData.password} onChange={handleChange} required />
-          </div>
-          <div>
-            <label>Số điện thoại</label>
-            <input type="text" name="phone" value={formData.phone} onChange={handleChange} required />
-          </div>
-          <div>
-            <label>Email</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} required />
-          </div>
-          <div>
-            <label>Địa chỉ</label>
-            <input type="text" name="address" value={formData.address} onChange={handleChange} required />
-          </div>
-          <label>Giới tính</label>
-          <select name="gender" value={formData.gender} onChange={handleChange} required>
-            <option value="">Chọn giới tính</option>
-            <option value="Nam">Nam</option>
-            <option value="Nữ">Nữ</option>
-          </select>
+          {["username", "password", "phone", "email", "address"].map((field) => (
+            <div key={field}>
+              <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
+              <input
+                type={field === "password" ? "password" : "text"}
+                name={field}
+                value={formData[field]}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          ))}
           <div className="button-group">
             <button type="submit">Tạo tài khoản</button>
             <button type="button" onClick={onClose}>Đóng</button>

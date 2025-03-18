@@ -5,10 +5,12 @@ import editIcon from "../image/Edit.png"; // Thay đổi đường dẫn nếu c
 import deleteIcon from "../image/Delete.png"; // Thay đổi đường dẫn nếu cần
 import Sidebar from "./Sidebar";
 
-const Account = ({ username, onLogout }) => {
+const Account = ({ onLogout }) => {
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("home");
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user'));
+  const username = user?.username || "Admin";
 
   const toggleSchedule = () => {
     setIsScheduleOpen(!isScheduleOpen);

@@ -1,0 +1,94 @@
+.pet-detail-container {
+  background-color: #FFCC99;
+  height: 100vh;
+  padding: 20px;
+}
+.pet-detail-container h1 {
+  color: black;
+}
+.pet-detail-container header {
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: space-between;
+}
+.search-container {
+  margin-bottom: 20px;
+}
+.search-input {
+  padding: 10px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+.pet-detail-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 10px;
+}
+.header-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+.btn {
+  padding: 10px 15px;
+  background-color: #767171;
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+.add-pet {
+  margin-bottom: 0;
+  color: black;
+  font-size: 20px;
+  text-decoration: none;
+  font-weight: bold;
+  justify-content: flex-start;
+}
+
+.add-pet:hover {
+  background-color: #F4983D; /* Màu xanh đậm hơn khi hover */
+}
+.header-container{
+  margin-bottom: 20px;
+}
+.add-pet-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Nền mờ */
+  z-index: 1000; /* Đảm bảo modal nằm trên các phần tử khác */
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 90%;
+  max-height: 100vh; /* Chiều cao tối đa của modal */
+  overflow-y: auto; /* Thêm scroll nếu nội dung quá lớn */
+  width: 600px; /* Chiều rộng của modal */
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}

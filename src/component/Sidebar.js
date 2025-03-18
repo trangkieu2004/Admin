@@ -47,7 +47,7 @@ const Sidebar = () => {
         <img src={logo} alt="Logo" />
       </div>
       <nav>
-        <Link className={getMenuClass("/account")} to="/account">
+        <Link className={getMenuClass("/dashboard")} to="/dashboard">
           <i className="fas fa-home menu-icon"></i>
           Home
         </Link>
