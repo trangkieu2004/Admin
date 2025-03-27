@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import {useNavigate } from "react-router-dom"; // Nhập Link từ react-router-dom
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // Import điều hướng
+import axios from "axios";
 import "./SpaDetail.css";
 import editIcon from "../picture/Edit.png";
 import deleteIcon from "../picture/Delete.png";
@@ -8,74 +9,130 @@ import AddSpa from "./AddSpa";
 
 const SpaDetail = ({ username, onLogout }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [spaData, setSpaData] = useState([
-    {
-      name: "dieu",
-      phone: "0123456789",
-      pet: "null",
-      weight: "null",
-      service: "PetCare - Tắm Cạo",
-      day: "2024-11-29",
-      time: "10:00 AM",
-      pay: "Thanh toán khi xong nhiệm vụ",
-      price: "400.00",
-      account: "gogo",
-      state : "Chờ xác nhận"
-    },
-    {
-      name: "Trần Thị B",
-      phone: "0987654321",
-      pet: "null",
-      weight: "null",
-      service: "PetCare - Tắm Cạo",
-      day: "2024-11-29",
-      time: "10:00 AM",
-      pay: "Thanh toán khi xong nhiệm vụ",
-      price: "400.00",
-      account: "gogo",
-      state : "Chờ xác nhận"
-    },
-    {
-      name: "Phạm Văn C",
-      phone: "0912345678",
-      pet: "[{“age”: “1”, “breed”: “husky”, “gender”: “Đực”, “petName”: “meomeo”, “species”: “Mèo”, “symptoms”: “”]}",
-      weight: "null",
-      service: "PetCare - Tắm Cạo",
-      day: "2024-11-29",
-      time: "10:00 AM",
-      pay: "Thanh toán khi xong nhiệm vụ",
-      price: "400.00",
-      account: "gogo",
-      state : "Chờ xác nhận"
-    },
-    // Thêm dữ liệu khác nếu cần
-  ]);
-  const filteredData = spaData.filter(
-    (item) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.phone.includes(searchTerm)
-  );
+  const [spaData, setSpaData] = useState([]);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("home");
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editStatusId, setEditStatusId] = useState(null); // Lưu ID đang chỉnh sửa
+  const [selectedStatus, setSelectedStatus] = useState(""); // Lưu trạng thái được chọn
   const navigate = useNavigate();
 
-  const toggleSchedule = () => {
-    setIsScheduleOpen(!isScheduleOpen);
-  };
+  const toggleSchedule = () => setIsScheduleOpen(!isScheduleOpen);
+  const handleMenuClick = (menu) => setActiveMenu(menu);
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const handleMenuClick = (menu) => {
-    setActiveMenu(menu);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (!token) {
+      alert("Bạn chưa đăng nhập!");
+      navigate("/login");
+      return;
+    }
+
+    const fetchSpa = async () => {
+      try {
+        const response = await axios.get("https://pet-booking-eta.vercel.app/appointments", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+    
+        console.log("📦 Dữ liệu từ API:", response.data);
+    
+        // Nếu API trả về một mảng, thì set thẳng vào state
+        if (Array.isArray(response.data)) {
+          setSpaData(response.data);
+        } else if (Array.isArray(response.data.data)) {
+          setSpaData(response.data.data);
+        } else {
+          console.error("❌ Dữ liệu không hợp lệ!", response.data);
+          setSpaData([]);
+        }
+      } catch (error) {
+        console.error("🚨 Lỗi khi lấy dữ liệu:", error);
+        setSpaData([]);
+      }
+    };
+    
+
+    fetchSpa();
+  }, [token, navigate]);
+  const statusOptions = [
+    { label: "Chờ xác nhận", value: "pending" },
+    { label: "Đã xác nhận", value: "confirmed" },
+    { label: "Đang đợi", value: "waiting" },
+    { label: "Đang thực hiện", value: "in_progress" },
+    { label: "Hoàn thành", value: "completed" },
+    { label: "Đã hủy", value: "canceled" },
+  ];
+  const handleEditClick = (id, currentStatus) => {
+    setEditStatusId(id);
+    setSelectedStatus(currentStatus);
   };
 
   const handleLogout = () => {
-    onLogout(); // Gọi hàm onLogout từ props
-    navigate("/home"); // Điều hướng về trang home
+    onLogout();
+    navigate("/login");
   };
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+  // Lọc dữ liệu tìm kiếm
+  const filteredData = spaData.filter(
+    (item) =>
+      item.service?.name && // Chỉ lấy những mục có dịch vụ hợp lệ
+      (
+        (item.customerName && item.customerName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (item.customerPhone && item.customerPhone.includes(searchTerm))
+      )
+  );
+  const handleUpdateStatus = async (id) => {
+    if (!selectedStatus) {
+      alert("Vui lòng chọn trạng thái!");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `https://pet-booking-eta.vercel.app/appointments/${id}/status`,
+        { status: selectedStatus },
+        { headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" } }
+      );
+
+      console.log("✅ API Response:", response.data);
+      alert("Cập nhật trạng thái thành công!");
+
+      setSpaData((prevData) =>
+        prevData.map((item) => (item._id === id ? { ...item, status: selectedStatus } : item))
+      );
+      setEditStatusId(null); // Đóng dropdown sau khi cập nhật
+    } catch (error) {
+      console.error("❌ Lỗi khi cập nhật trạng thái:", error.response?.data || error.message);
+      alert("Cập nhật trạng thái thất bại!");
+    }
   };
+  
+  const handleDeleteAppointment = async (id) => {
+    const confirmDelete = window.confirm("Bạn có chắc chắn muốn hủy lịch hẹn này?");
+    if (!confirmDelete) return;
+  
+    try {
+      const response = await axios.delete(
+        `https://pet-booking-eta.vercel.app/appointments/${id}/cancel`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+  
+      console.log("🗑️ Xóa lịch hẹn thành công:", response.data);
+      alert("Lịch hẹn đã được hủy!");
+  
+      // Cập nhật danh sách hiển thị
+      setSpaData((prevData) => prevData.filter((item) => item._id !== id));
+    } catch (error) {
+      console.error("❌ Lỗi khi hủy lịch hẹn:", error.response?.data || error.message);
+      alert("Hủy lịch hẹn thất bại!");
+    }
+  };
+  
+
   return (
     <div className="container-fluid dashboard">
       <Sidebar
@@ -87,10 +144,8 @@ const SpaDetail = ({ username, onLogout }) => {
       <div className="account-main">
         <div className="header-container">
           <div className="hello-user">
-            <span><i class="fa-solid fa-circle-user icon-user"></i>Xin chào {username}</span>
-            <button className="logout" onClick={handleLogout}>
-              Log Out
-            </button>
+            <span><i className="fa-solid fa-circle-user icon-user"></i> Xin chào {username}</span>
+            <button className="logout" onClick={handleLogout}>Log Out</button>
           </div>
         </div>
         <div className="spa-detail-container">
@@ -111,56 +166,70 @@ const SpaDetail = ({ username, onLogout }) => {
             <table>
               <thead>
                 <tr>
-                  <th>Tên</th>
+                  <th>ID</th>
+                  <th>Tên khách</th>
                   <th>Số điện thoại</th>
-                  <th>Thông tin pet</th>
-                  <th>Cân nặng</th>
+                  <th>Tên Pet</th>
+                  <th>Giống</th>
                   <th>Dịch vụ</th>
                   <th>Ngày</th>
-                  <th>Giờ</th>
                   <th>Thanh toán</th>
                   <th>Giá</th>
-                  <th>Tài Khoản</th>
                   <th>Trạng thái</th>
                   <th>Tùy chọn</th>
                 </tr>
               </thead>
               <tbody>
-              {filteredData.length > 0 ? (
-            filteredData.map((item, index) => (
-              <tr key={index}>
-                <td>{item.name}</td>
-                <td>{item.phone}</td>
-                <td>{item.pet}</td>
-                <td>{item.weight}</td>
-                <td>{item.service}</td>
-                <td>{item.day}</td>
-                <td>{item.time}</td>
-                <td>{item.pay}</td>
-                <td>{item.price}</td>
-                <td>{item.account}</td>
-                <td>{item.state}</td>
-                <td>
-                  <button>
-                    <img src={editIcon} alt="Edit" />
-                  </button>
-                  <button>
-                    <img src={deleteIcon} alt="Delete" />
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5">Không tìm thấy kết quả.</td>
-            </tr>
-          )}
+                {filteredData.length > 0 ? (
+                  filteredData.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item._id}</td>
+                      <td>{item.customerName}</td>
+                      <td>{item.customerPhone}</td>
+                      <td>{item.petName}</td>
+                      <td>{item.petBreed}</td>
+                      <td>{item.service?.name || "N/A"}</td>
+                      <td>{item.appointmentTime ? new Date(item.appointmentTime).toLocaleString() : "Chưa đặt lịch"}</td>
+                      <td>{item.paymentMethod || "Chưa thanh toán"}</td>
+                      <td>{item.service?.price ? `${item.service.price} VND` : "Không có giá"}</td>
+                      <td>
+                      {editStatusId === item._id ? (
+                        <select
+                          value={selectedStatus}
+                          onChange={(e) => setSelectedStatus(e.target.value)}
+                        >
+                          {statusOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      ) : (
+                        item.status || "Chưa xác định"
+                      )}
+                    </td>
+                      <td>
+                      {editStatusId === item._id ? (
+                        <button onClick={() => handleUpdateStatus(item._id)}>Lưu</button>
+                      ) : (
+                        <button onClick={() => handleEditClick(item._id, item.status)}>
+                          <img src={editIcon} alt="Edit" />
+                        </button>
+                      )}
+                        <button onClick={() => handleDeleteAppointment(item._id)}><img src={deleteIcon} alt="Delete" /></button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="11">Không tìm thấy kết quả.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-      {/* Hiển thị AddSpa khi isModalOpen là true */}
       {isModalOpen && <AddSpa onClose={toggleModal} />}
     </div>
   );

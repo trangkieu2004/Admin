@@ -21,6 +21,16 @@ const AddSchedule = ({ onClose }) => {
 
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [doctors, setDoctors] = useState([]);
+  // 🛠 Theo dõi thay đổi của `formData`
+  useEffect(() => {
+    console.log("🛠 formData đã cập nhật:", formData);
+  }, [formData]);
+  // 🛠 Nếu `_id` được cập nhật, tự động hiển thị modal xác nhận
+  useEffect(() => {
+    if (formData._id) {
+      setIsConfirmVisible(true);
+    }
+  }, [formData._id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,6 +50,7 @@ const AddSchedule = ({ onClose }) => {
           "https://pet-booking-eta.vercel.app/vet-doctors",
           { headers }
         );
+        console.log("📋 Danh sách bác sĩ:", doctorRes.data?.data); // Kiểm tra dữ liệu
         if (Array.isArray(doctorRes.data?.data)) {
           setDoctors(doctorRes.data.data);
         }
@@ -53,7 +64,15 @@ const AddSchedule = ({ onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "vetDoctor") {
+      setFormData((prev) => ({
+        ...prev,
+        vetDoctor: value, // Chỉ lưu ID thay vì object
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -65,16 +84,20 @@ const AddSchedule = ({ onClose }) => {
       return;
     }
   
+    if (!formData.vetDoctor) {
+      alert("❌ Vui lòng chọn bác sĩ!");
+      return;
+    }
+  
     const payload = {
       ...formData,
-      customer: formData.customer,
-      appointmentTime: new Date(formData.appointmentTime).toISOString(), // ✅ convert to ISO
+      appointmentTime: new Date(formData.appointmentTime).toISOString(),
     };
   
-    console.log("📤 Dữ liệu gửi:", payload);
+    console.log("📤 Dữ liệu gửi lên server:", payload);
   
     try {
-      await axios.post(
+      const response = await axios.post(
         "https://pet-booking-eta.vercel.app/appointments",
         payload,
         {
@@ -85,14 +108,23 @@ const AddSchedule = ({ onClose }) => {
         }
       );
   
+      console.log("📌 API Response:", response.data);
+  
+      // 🔹 Cập nhật `_id` nếu tồn tại
+      setFormData((prev) => ({
+        ...prev,
+        _id: response.data.data?._id || "", // Đảm bảo không lỗi nếu API không trả về _id
+      }));
+  
       alert("🎉 Lịch hẹn đã được tạo thành công!");
       setIsConfirmVisible(true);
     } catch (error) {
-      console.error("🚨 Lỗi gửi lịch:", error);
-      const msg =
-        error.response?.data?.message ||
-        "Không thể tạo lịch hẹn. Vui lòng thử lại.";
-      alert(`❌ ${msg}`);
+      console.error("🚨 API Error:", error.response?.data);
+      alert(
+        `❌ Không thể tạo lịch hẹn: ${
+          error.response?.data?.message || "Lỗi không xác định"
+        }`
+      );
     }
   };
   
@@ -144,7 +176,7 @@ const AddSchedule = ({ onClose }) => {
             <label>Bác sĩ:</label>
             <select
               name="vetDoctor"
-              value={formData.vetDoctor}
+              value={formData.vetDoctor} // Chỉ lưu ID
               onChange={handleChange}
               required
             >
@@ -156,6 +188,7 @@ const AddSchedule = ({ onClose }) => {
               ))}
             </select>
           </div>
+
           <div>
             <label>Tên thú cưng:</label>
             <input
@@ -243,7 +276,14 @@ const AddSchedule = ({ onClose }) => {
       </div>
 
       {isConfirmVisible && (
-        <ConfirmSchedule formData={formData} onClose={handleCloseConfirm} />
+        <>
+          {console.log("📌 Debug trước khi mở modal:", formData)}
+          <ConfirmSchedule
+            formData={formData}
+            onClose={handleCloseConfirm}
+            doctors={doctors}
+          />
+        </>
       )}
     </div>
   );
