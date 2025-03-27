@@ -10,7 +10,6 @@
   align-items: center;
   z-index: 1000; /* Đảm bảo modal hiển thị trên cùng */
 }
-
 .modal-content {
   background-color: white;
   padding: 20px;
@@ -22,6 +21,7 @@
   flex-direction: column; /* Để căn giữa nội dung theo chiều dọc */
   align-items: center; /* Căn giữa nội dung bên trong modal */
 }
+
 .button-group {
   display: flex;
   justify-content: flex-end; /* Căn lề phải */
@@ -30,6 +30,9 @@
 
 button {
   margin-left: 10px; /* Khoảng cách giữa các nút */
+}
+.btn-orange {
+  background-color: #F4983D;
 }
 .navigation {
   display: flex;
@@ -49,21 +52,22 @@ button {
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #f0f0f0; /* Màu nền cho các bước */
+  background-color: #e0e0e0; /* Màu mặc định khi chưa xác nhận */
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
   color: black;
+  transition: background-color 0.3s ease;
 }
 
-.completed .circle {
+.nav-item.completed .circle {
   background-color: #7CB9FA; /* Màu xanh cho bước đã hoàn thành */
   color: white;
 }
 
-.current .circle {
-  background-color: #1EFF0E; /* Màu cam cho bước hiện tại */
+.nav-item.current .circle {
+  background-color: #1EFF0E; /* Màu xanh lá cho bước hiện tại */
   color: white;
 }
 
@@ -71,6 +75,7 @@ button {
   height: 2px;
   width: 50px; /* Chiều dài đường kẻ nối */
   background-color: #ccc;
+  transition: background-color 0.3s ease;
 }
 
 /* Định dạng các label cho bước */
@@ -78,6 +83,7 @@ button {
   margin-top: 5px; /* Khoảng cách giữa số và tên bước */
   text-align: center; /* Căn giữa nội dung */
 }
+
 .form-confirm {
   width: 100%; /* Để form chiếm toàn bộ chiều rộng của modal */
   max-width: 600px; /* Chiều rộng tối đa của form */

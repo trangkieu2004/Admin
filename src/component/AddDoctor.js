@@ -7,35 +7,72 @@ const AddDoctor = ({ onClose, onAddDoctor }) => {
     phone: "",
     email: "",
     address: "",
-    specialty: "",
-    info: "",
+    specialization: "",
+    qualification: "",
+    description: "",
     gender: "",
   });
-
+  // Hàm chuyển đổi giới tính từ tiếng Việt sang chuẩn API
+  const mapGender = (gender) => {
+    if (gender === "Nam") return "MALE";
+    if (gender === "Nữ") return "FEMALE";
+    return "OTHER";
+  };
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Gọi hàm onAddAccount để thêm tài khoản
-    onAddDoctor(formData);
-    // Reset formData về giá trị ban đầu
-    setFormData({
-      name: "",
-      phone: "",
-      email: "",
-      address: "",
-      specialty: "",
-      info: "",
-      gender: "",
-    });
-
-    // Đóng modal
-    onClose();
+  
+    const doctorData = {
+      name: formData.name.trim(),
+      phone: formData.phone.trim(),
+      email: formData.email.trim(),
+      gender: mapGender(formData.gender),
+      specialization: formData.specialization.trim(),
+      address: formData.address.trim(),
+      qualification: formData.qualification.trim(),
+      description: formData.description.trim(),
+    };
+  
+    const token = localStorage.getItem("token");
+  
+    if (!token) {
+      alert("Chưa đăng nhập hoặc token không tồn tại");
+      return;
+    }
+  
+    console.log("Dữ liệu gửi lên:", doctorData);
+  
+    try {
+      const response = await fetch(
+        "https://pet-booking-eta.vercel.app/vet-doctors",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(doctorData),
+        }
+      );
+  
+      if (response.ok) {
+        const data = await response.json();
+        alert("Thêm bác sỹ thành công!");
+        onAddDoctor(data);
+        onClose();
+      } else {
+        const errorData = await response.json();
+        alert("Có lỗi khi thêm bác sỹ: " + (errorData.message || "Đã xảy ra lỗi"));
+      }
+    } catch (error) {
+      console.error("Lỗi khi gọi API:", error);
+      alert("Lỗi kết nối đến máy chủ");
+    }
   };
-
   return (
     <div className="add-spa-modal">
       <div className="modal-content">
@@ -89,8 +126,28 @@ const AddDoctor = ({ onClose, onAddDoctor }) => {
             <label>Chuyên khoa</label>
             <input
               type="text"
-              name="specialty"
-              value={formData.specialty}
+              name="specialization"
+              value={formData.specialization}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Bằng cấp</label>
+            <input
+              type="text"
+              name="qualification"
+              value={formData.qualification}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Mô tả</label>
+            <input
+              type="text"
+              name="description"
+              value={formData.description}
               onChange={handleChange}
               required
             />

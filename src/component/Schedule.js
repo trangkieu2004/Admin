@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import {useNavigate } from "react-router-dom"; // Nhập Link từ react-router-dom
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios"; 
 import "./Schedule.css";
 import editIcon from "../picture/Edit.png";
 import deleteIcon from "../picture/Delete.png";
@@ -8,44 +9,74 @@ import AddSchedule from "./AddSchedule";
 
 const Schedule = ({ username, onLogout }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [scheduleData, setScheduleData] = useState([
-    {
-      name: "dieu",
-      phone: "0123456789",
-      pet: "null",
-      weight: "null",
-      doctor: "Dr.Nguyễn Ngọc Mai",
-      day: "2024-11-29",
-      time: "10:00 AM",
-      pay: "Thanh toán khi xong nhiệm vụ",
-      price: "400.00",
-      account: "gogo",
-      state : "Chờ xác nhận"
-    },
-    {
-      name: "Phạm Văn C",
-      phone: "0912345678",
-      pet: "[{“age”: “1”, “breed”: “husky”, “gender”: “Đực”, “petName”: “meomeo”, “species”: “Mèo”, “symptoms”: “”]}",
-      weight: "null",
-      doctor: "Dr.Nguyễn Thị Mai",
-      day: "2024-11-29",
-      time: "10:00 AM",
-      pay: "Thanh toán khi xong nhiệm vụ",
-      price: "400.00",
-      account: "gogo",
-      state : "Chờ xác nhận"
-    },
-    // Thêm dữ liệu khác nếu cần
-  ]);
-  const filteredData = scheduleData.filter(
-    (item) =>
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.phone.includes(searchTerm)
-  );
+  const [scheduleData, setScheduleData] = useState([]);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("home");
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  
+  // 🛡️ Kiểm tra đăng nhập
+  useEffect(() => {
+    if (!token) {
+      alert("Bạn chưa đăng nhập!");
+      navigate("/login");
+      return;
+    }
+
+    const fetchSchedules = async () => {
+      try {
+        const response = await axios.get("https://pet-booking-eta.vercel.app/appointments", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        console.log("📦 Dữ liệu từ API:", response.data);
+
+        if (Array.isArray(response.data.data)) {
+          setScheduleData(response.data.data);
+        } else {
+          console.error("❌ Dữ liệu không hợp lệ!", response.data);
+          setScheduleData([]);
+        }
+      } catch (error) {
+        console.error("🚨 Lỗi khi lấy dữ liệu:", error);
+        setScheduleData([]);
+      }
+    };
+
+    fetchSchedules();
+  }, [token, navigate]);
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Bạn có chắc muốn hủy lịch hẹn này?");
+    if (!confirmDelete) return;
+  
+    try {
+      const response = await axios.delete(`https://pet-booking-eta.vercel.app/appointments/${id}/cancel`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+  
+      console.log("🗑️ Hủy thành công:", response.data);
+  
+      // Cập nhật lại danh sách lịch hẹn sau khi xoá
+      setScheduleData(prev => prev.filter(item => item._id !== id));
+    } catch (error) {
+      console.error("❌ Lỗi khi hủy lịch hẹn:", error);
+      alert("Hủy lịch hẹn thất bại!");
+    }
+  };
+  
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    onLogout();
+    navigate("/login");
+  };
 
   const toggleSchedule = () => {
     setIsScheduleOpen(!isScheduleOpen);
@@ -55,14 +86,13 @@ const Schedule = ({ username, onLogout }) => {
     setActiveMenu(menu);
   };
 
-  const handleLogout = () => {
-    onLogout(); // Gọi hàm onLogout từ props
-    navigate("/home"); // Điều hướng về trang home
-  };
+  // ✅ Đúng thuộc tính API
+  const filteredData = (Array.isArray(scheduleData) ? scheduleData : []).filter(
+    (item) =>
+      item.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.customerPhone.includes(searchTerm)
+  );
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
   return (
     <div className="container-fluid dashboard">
       <Sidebar
@@ -74,7 +104,7 @@ const Schedule = ({ username, onLogout }) => {
       <div className="account-main">
         <div className="header-container">
           <div className="hello-user">
-            <span><i class="fa-solid fa-circle-user icon-user"></i>Xin chào {username}</span>
+            <span><i className="fa-solid fa-circle-user icon-user"></i> Xin chào {username}</span>
             <button className="logout" onClick={handleLogout}>
               Log Out
             </button>
@@ -87,7 +117,7 @@ const Schedule = ({ username, onLogout }) => {
             <div className="search-container">
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Tìm kiếm..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="search-input"
@@ -98,56 +128,51 @@ const Schedule = ({ username, onLogout }) => {
             <table>
               <thead>
                 <tr>
-                  <th>Tên</th>
+                  <th>Tên khách hàng</th>
                   <th>Số điện thoại</th>
-                  <th>Thông tin pet</th>
-                  <th>Cân nặng</th>
-                  <th>Bác sỹ</th>
+                  <th>Pet</th>
+                  <th>Giống</th>
+                  <th>Bác sĩ</th>
                   <th>Ngày</th>
-                  <th>Giờ</th>
                   <th>Thanh toán</th>
                   <th>Giá</th>
-                  <th>Tài Khoản</th>
                   <th>Trạng thái</th>
                   <th>Tùy chọn</th>
                 </tr>
               </thead>
               <tbody>
-              {filteredData.length > 0 ? (
-            filteredData.map((item, index) => (
-              <tr key={index}>
-                <td>{item.name}</td>
-                <td>{item.phone}</td>
-                <td>{item.pet}</td>
-                <td>{item.weight}</td>
-                <td>{item.doctor}</td>
-                <td>{item.day}</td>
-                <td>{item.time}</td>
-                <td>{item.pay}</td>
-                <td>{item.price}</td>
-                <td>{item.account}</td>
-                <td>{item.state}</td>
-                <td>
-                  <button>
-                    <img src={editIcon} alt="Edit" />
-                  </button>
-                  <button>
-                    <img src={deleteIcon} alt="Delete" />
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5">Không tìm thấy kết quả.</td>
-            </tr>
-          )}
+                {filteredData.length > 0 ? (
+                  filteredData.map((item) => (
+                    <tr key={item._id}>
+                      <td>{item.customerName}</td>
+                      <td>{item.customerPhone}</td>
+                      <td>{item.petName}</td>
+                      <td>{item.petBreed}</td>
+                      <td>{item.vetDoctor?.name}</td>
+                      <td>{new Date(item.appointmentTime).toLocaleString()}</td>
+                      <td>{item.paymentMethod}</td>
+                      <td>{item.service?.price} VND</td>
+                      <td>{item.status}</td>
+                      <td>
+                        <button>
+                          <img src={editIcon} alt="Edit" />
+                        </button>
+                        <button onClick={() => handleDelete(item._id)}>
+                          <img src={deleteIcon} alt="Delete" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="10">Không có dữ liệu.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
       </div>
-      {/* Hiển thị AddSpa khi isModalOpen là true */}
       {isModalOpen && <AddSchedule onClose={toggleModal} />}
     </div>
   );

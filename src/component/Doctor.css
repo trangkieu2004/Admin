@@ -1,6 +1,7 @@
 .spa-detail-container {
   background-color: #FFCC99;
-  height: 100vh;
+  min-height: 100vh;
+  height: auto;
   padding: 20px;
 }
 .spa-detail-container h1 {

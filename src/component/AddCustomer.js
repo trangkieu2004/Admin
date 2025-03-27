@@ -35,8 +35,8 @@ const AddCustomer = ({ onClose, onAddCustomer }) => {
       });
 
       if (response.ok) {
-        const newCustomer = await response.json();
-        onAddCustomer(newCustomer);
+        const newCustomerResponse = await response.json();
+        onAddCustomer(newCustomerResponse.data);
         alert("Tạo khách hàng thành công!");
         resetForm();
         onClose();

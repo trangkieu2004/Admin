@@ -138,7 +138,15 @@ const UserCustomer = ({ username, onLogout }) => {
   const handleAddCustomer = (newCustomer) => {
     setCustomerData((prevData) => [
       ...prevData,
-      { id: newCustomer._id, ...newCustomer },
+      {
+        id: newCustomer._id,
+        account: newCustomer.username,
+        name: newCustomer.username,
+        phone: newCustomer.phone,
+        email: newCustomer.email,
+        address: newCustomer.address,
+        gender: "Chưa cập nhật",
+      },
     ]);
   };
 
