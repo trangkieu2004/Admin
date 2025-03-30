@@ -104,8 +104,9 @@ const SpaDetail = ({ username, onLogout }) => {
       );
       setEditStatusId(null); // Đóng dropdown sau khi cập nhật
     } catch (error) {
-      console.error("❌ Lỗi khi cập nhật trạng thái:", error.response?.data || error.message);
-      alert("Cập nhật trạng thái thất bại!");
+      const errorMessage = error.response?.data?.message || "Cập nhật trạng thái thất bại!";
+      console.error("❌ Lỗi khi cập nhật trạng thái:", errorMessage);
+      alert(`🚨 Lỗi: ${errorMessage}`);
     }
   };
   
@@ -127,8 +128,9 @@ const SpaDetail = ({ username, onLogout }) => {
       // Cập nhật danh sách hiển thị
       setSpaData((prevData) => prevData.filter((item) => item._id !== id));
     } catch (error) {
-      console.error("❌ Lỗi khi hủy lịch hẹn:", error.response?.data || error.message);
-      alert("Hủy lịch hẹn thất bại!");
+      const errorMessage = error.response?.data?.message || "Hủy lịch hẹn thất bại!";
+      console.error("❌ Lỗi khi hủy lịch hẹn:", errorMessage);
+      alert(`🚨 Lỗi: ${errorMessage}`);
     }
   };
   

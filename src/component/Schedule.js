@@ -127,6 +127,9 @@ const Schedule = ({ username, onLogout }) => {
     onLogout();
     navigate("/login");
   };
+  const handleAddSchedule = (newAppointment) => {
+    setScheduleData((prevData) => [newAppointment, ...prevData]); // Thêm vào đầu danh sách
+  };
 
   const toggleSchedule = () => {
     setIsScheduleOpen(!isScheduleOpen);
@@ -248,7 +251,7 @@ const Schedule = ({ username, onLogout }) => {
           </div>
         </div>
       </div>
-      {isModalOpen && <AddSchedule onClose={toggleModal} />}
+      {isModalOpen && <AddSchedule onClose={toggleModal} onAddSchedule={handleAddSchedule} />}
     </div>
   );
 };

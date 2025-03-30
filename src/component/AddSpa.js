@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ConfirmBooking from "./ConfirmBooking";
 import "./AddSpa.css"; // Tạo file CSS cho phong cách
 
-const AddSpa = ({ onClose }) => {
+const AddSpa = ({ onClose, onAddSpa }) => {
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
@@ -19,7 +18,6 @@ const AddSpa = ({ onClose }) => {
     paymentMethod: "",
   });
 
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [services, setServices] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
@@ -72,7 +70,7 @@ const AddSpa = ({ onClose }) => {
     console.log("📤 Dữ liệu gửi:", payload);
 
     try {
-      await axios.post(
+      const response = await axios.post(
         "https://pet-booking-eta.vercel.app/appointments",
         payload,
         {
@@ -82,9 +80,27 @@ const AddSpa = ({ onClose }) => {
           },
         }
       );
-
+      const newAppointment = response.data.data;
       alert("🎉 Lịch hẹn đã được tạo thành công!");
-      setIsConfirmVisible(true);
+      if (newAppointment) {
+        onAddSpa(newAppointment); // Cập nhật danh sách ngay lập tức
+        setFormData({  // Reset form sau khi tạo thành công
+          customerName: "",
+          customerPhone: "",
+          service: "",
+          appointmentTime: "",
+          status: "pending",
+          note: "",
+          petName: "",
+          petType: "",
+          petAge: "",
+          petBreed: "",
+          petGender: "",
+          paymentMethod: "",
+        });
+        onClose(); // Đóng modal sau khi thêm thành công
+      }
+      handleCloseConfirm();
     } catch (error) {
       console.error("🚨 Lỗi gửi lịch:", error);
       console.error("📩 Phản hồi từ server:", error.response?.data);
@@ -96,7 +112,6 @@ const AddSpa = ({ onClose }) => {
   };
 
   const handleCloseConfirm = () => {
-    setIsConfirmVisible(false);
     onClose(); // Đóng modal tạo lịch
   };
 
@@ -235,11 +250,6 @@ const AddSpa = ({ onClose }) => {
           </div>
         </form>
       </div>
-
-      {/* Hiển thị modal xác nhận */}
-      {isConfirmVisible && (
-        <ConfirmBooking formData={formData} onClose={handleCloseConfirm} />
-      )}
     </div>
   );
 };

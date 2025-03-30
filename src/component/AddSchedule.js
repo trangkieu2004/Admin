@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ConfirmSchedule from "./ConfirmSchedule";
 import "./AddSchedule.css";
 
-const AddSchedule = ({ onClose }) => {
+const AddSchedule = ({ onClose, onAddSchedule }) => {
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
@@ -19,18 +18,12 @@ const AddSchedule = ({ onClose }) => {
     paymentMethod: "",
   });
 
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [doctors, setDoctors] = useState([]);
   // 🛠 Theo dõi thay đổi của `formData`
   useEffect(() => {
     console.log("🛠 formData đã cập nhật:", formData);
   }, [formData]);
   // 🛠 Nếu `_id` được cập nhật, tự động hiển thị modal xác nhận
-  useEffect(() => {
-    if (formData._id) {
-      setIsConfirmVisible(true);
-    }
-  }, [formData._id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -115,9 +108,12 @@ const AddSchedule = ({ onClose }) => {
         ...prev,
         _id: response.data.data?._id || "", // Đảm bảo không lỗi nếu API không trả về _id
       }));
-  
+      const newAppointment = response.data.data;
       alert("🎉 Lịch hẹn đã được tạo thành công!");
-      setIsConfirmVisible(true);
+      if (newAppointment) {
+        onAddSchedule(newAppointment);
+      }
+      handleCloseConfirm();
     } catch (error) {
       console.error("🚨 API Error:", error.response?.data);
       alert(
@@ -130,7 +126,6 @@ const AddSchedule = ({ onClose }) => {
   
 
   const handleCloseConfirm = () => {
-    setIsConfirmVisible(false);
     onClose();
   };
 
@@ -275,7 +270,7 @@ const AddSchedule = ({ onClose }) => {
         </form>
       </div>
 
-      {isConfirmVisible && (
+      {/* {isConfirmVisible && (
         <>
           {console.log("📌 Debug trước khi mở modal:", formData)}
           <ConfirmSchedule
@@ -284,7 +279,7 @@ const AddSchedule = ({ onClose }) => {
             doctors={doctors}
           />
         </>
-      )}
+      )} */}
     </div>
   );
 };

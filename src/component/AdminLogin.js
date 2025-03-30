@@ -37,14 +37,19 @@ const AdminLogin = () => {
 
     } catch (error) {
       console.log("Lỗi nhận được từ API:", error.response?.data);
-      if (error.response?.data?.message) {
-        toast.error(error.response.data.message); // Hiển thị chính xác thông báo từ server
-      } else if (error.response?.data?.response?.message) {
-        toast.error(error.response.data.response.message);
-      } else {
-        toast.error('Đăng nhập không thành công');
+    
+      let errorMessage = "Có lỗi xảy ra, vui lòng thử lại!";
+    
+      if (Array.isArray(error.response?.data?.response?.message)) {
+        // Nếu `message` là mảng, nối tất cả lỗi lại
+        errorMessage = error.response.data.response.message.join(", ");
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
       }
+    
+      toast.error(errorMessage); // Hiển thị lỗi từ API hoặc lỗi mặc định
     }
+    
   };
 
   return (
