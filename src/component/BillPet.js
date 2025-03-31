@@ -1,47 +1,65 @@
-import React, { useState } from "react";
-import {useNavigate } from "react-router-dom"; // Nhập Link từ react-router-dom
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Nhập Link từ react-router-dom
 import "./BillPet.css";
 import Sidebar from "./Sidebar";
+import axios from "axios";
+import FileDownload from 'js-file-download';
 
 const BillPet = ({ username, onLogout }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const bill = [
-    {
-        id: 1,
-        account: "An",
-        fullName: "Lê Thị An",
-        phone: "09831016555",
-        petName: "Fog",
-        service: "Tắm cắt",
-        paymentMethod: "Đã thanh toán",
-        price: "200.000đ",
-        paymentStatus: "Đã thanh toán",
-    },
-    {
-        id: 2,
-        account: "Duy",
-        fullName: "Nguyễn Thị Duy",
-        phone: "0123456789",
-        petName: "Cún",
-        service: "Khám, tư vấn, điều trị",
-        paymentMethod: "Chuyển khoản",
-        price: "200.000đ",
-        paymentStatus: "Chưa thanh toán",
-    },
-];
-const filteredData = bill.filter((item) => {
-  return (
-      (item.account && item.account.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (item.fullName && item.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (item.phone && item.phone.includes(searchTerm)) || // Giả sử bạn muốn tìm kiếm theo số điện thoại
-      (item.petName && item.petName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (item.service && item.service.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      (item.price && item.price.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
-});
+  const [bill, setBill] = useState([]);
+
+  const filteredData = bill.filter((item) => {
+    return (
+      (item.appointment?.customer &&
+        item.appointment.customer.username
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())) ||
+      (item.appointment?.customerName &&
+        item.appointment.customerName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())) ||
+      (item.appointment.customerPhone &&
+        item.appointment.customerPhone.includes(searchTerm)) || // Giả sử bạn muốn tìm kiếm theo số điện thoại
+      (item.appointment?.petName &&
+        item.appointment.petName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()))
+    );
+  });
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("home");
   const navigate = useNavigate();
+
+  console.log(filteredData);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("❌ Không có token! Vui lòng đăng nhập lại.");
+        return;
+      }
+
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
+
+      try {
+        const billResponse = await axios.get("https://pet-booking-eta.vercel.app/invoices", {
+          headers,
+        });
+        if (Array.isArray(billResponse.data?.data)) {
+          setBill(billResponse.data.data);
+        }
+      } catch (error) {
+        console.error("❌ Lỗi khi fetch dữ liệu:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const toggleSchedule = () => {
     setIsScheduleOpen(!isScheduleOpen);
@@ -55,6 +73,25 @@ const filteredData = bill.filter((item) => {
     onLogout(); // Gọi hàm onLogout từ props
     navigate("/home"); // Điều hướng về trang home
   };
+
+  const handlePrint = async (id) => {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(
+      `https://pet-booking-eta.vercel.app/invoices/${id}/export`, // 📌 Đúng API cập nhật trạng thái
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: 'arraybuffer'
+      }
+    );
+
+    if (response) {
+      FileDownload(response.data, `${id}.pdf`);
+    }
+  }
+
   return (
     <div className="container-fluid dashboard">
       <Sidebar
@@ -66,7 +103,10 @@ const filteredData = bill.filter((item) => {
       <div className="account-main">
         <div className="header-container">
           <div className="hello-user">
-            <span><i class="fa-solid fa-circle-user icon-user"></i>Xin chào {username}</span>
+            <span>
+              <i class="fa-solid fa-circle-user icon-user"></i>Xin chào{" "}
+              {username}
+            </span>
             <button className="logout" onClick={handleLogout}>
               Log Out
             </button>
@@ -102,37 +142,35 @@ const filteredData = bill.filter((item) => {
                 </tr>
               </thead>
               <tbody>
-              {filteredData.length > 0 ? (
-            filteredData.map((item, index) => (
-              <tr key={index}>
-                <td>{item.id}</td>
-                <td>{item.account}</td>
-                <td>{item.fullName}</td>
-                <td>{item.phone}</td>
-                <td>{item.petName}</td>
-                <td>{item.service}</td>
-                <td>{item.paymentMethod}</td>
-                <td>{item.price}</td>
-                <td>{item.paymentStatus}</td>
-                <td>
-                  <button>
-                    Print
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="10">Không tìm thấy kết quả.</td>
-            </tr>
-          )}
+                {filteredData.length > 0 ? (
+                  filteredData.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item._id}</td>
+                      <td>{item.appointment?.customer?.username}</td>
+                      <td>{item.appointment?.customerName}</td>
+                      <td>{item.appointment?.customerPhone}</td>
+                      <td>{item.appointment?.petName}</td>
+                      <td>{item.appointment?.service?.name}</td>
+                      <td>{item.appointment?.paymentMethod}</td>
+                      <td>{item.amount}</td>
+                      <td>{item.status}</td>
+                      <td>
+                        <button onClick={() => handlePrint(item._id)}>Print</button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="10">Không tìm thấy kết quả.</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BillPet
+export default BillPet;
